@@ -9,21 +9,23 @@
 <body>
   <script>
     ;(function () {
-      var nextUrl = (location.href.match(/nextUrl=([^&]*?)/) || [])[1];
+      var nextUrl = (location.href.match(/nextUrl=([^&]*)/) || [])[1];
       if (!nextUrl) {
         throw new Error('nextUrl is not provided on the query of the current url');
       }
       nextUrl = decodeURIComponent(nextUrl);
 
-      var proxyUrl = (location.href.match(/proxyUrl=([^&]*?)/) || [])[1];
+      var proxyUrl = (location.href.match(/proxyUrl=([^&]*)/) || [])[1];
       if (!proxyUrl) {
         throw new Error('proxyUrl is not provided on the query of the current url');
       }
+      proxyUrl = decodeURIComponent(proxyUrl);
 
-      var localServerUrl = (location.href.match(/localServerUrl=([^&]*?)/) || [])[1];
+      var localServerUrl = (location.href.match(/localServerUrl=([^&]*)/) || [])[1];
       if (!localServerUrl) {
         throw new Error('localServerUrl is not provided on the query of the current url');
       }
+      localServerUrl = decodeURIComponent(localServerUrl);
 
       var url = localServerUrl
         + '?url=' + proxyUrl

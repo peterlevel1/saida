@@ -46,8 +46,8 @@ module.exports = function (targetUrl, localServerUrl, proxyUrl) {
 
     var obj = querystring.parse(strQuery);
     obj.redirectUrl = targetUrl
-      + '?proxyUrl=' + proxyUrl
-      + '&localServerUrl=' + localServerUrl
+      + '?proxyUrl=' + encodeURIComponent(proxyUrl)
+      + '&localServerUrl=' + encodeURIComponent(localServerUrl)
       + '&nextUrl=' + encodeURIComponent(location.href);
 
     var curTarget = res.redirectUrl.slice(0, indexOfQuery) + '?' + querystring.stringify(obj);
