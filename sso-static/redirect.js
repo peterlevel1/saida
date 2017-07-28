@@ -15,17 +15,17 @@ module.exports = function (targetUrl, localServerUrl, proxyUrl) {
    * @return {Boolean}
    */
   return function redirect(res) {
-  	if (!res) {
-  		return false;
-  	}
+    if (!res) {
+      return false;
+    }
 
-  	if (typeof res === "string") {
-  		try {
-  			res = JSON.parse(res);
-  		} catch(e) {
-  			return false;
-  		}
-  	}
+    if (typeof res === "string") {
+      try {
+        res = JSON.parse(res);
+      } catch(e) {
+        return false;
+      }
+    }
 
     if (
       !res.redirect ||
