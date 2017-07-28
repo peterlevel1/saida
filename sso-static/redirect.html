@@ -7,38 +7,56 @@
   <title>saida sso helper</title>
 </head>
 <body>
+  <h1 id='msg'></h1>
   <script>
     ;(function () {
-      var nextUrl = (location.href.match(/nextUrl=([^&]*)/) || [])[1];
-      if (!nextUrl) {
-        throw new Error('nextUrl is not provided on the query of the current url');
-      }
-      nextUrl = decodeURIComponent(nextUrl);
+      var urlCurrent = location.href;
 
-      var proxyUrl = (location.href.match(/proxyUrl=([^&]*)/) || [])[1];
+      var originUrl = matchPart(urlCurrent, 'originUrl');
+      if (!originUrl) {
+        return printError('nextUrl is not provided on the query of the current url');
+      }
+
+      var proxyUrl = matchPart(urlCurrent, 'proxyUrl');
       if (!proxyUrl) {
-        throw new Error('proxyUrl is not provided on the query of the current url');
+        return printError('proxyUrl is not provided on the query of the current url');
       }
-      proxyUrl = decodeURIComponent(proxyUrl);
 
-      var localServerUrl = (location.href.match(/localServerUrl=([^&]*)/) || [])[1];
+      var localServerUrl = matchPart(urlCurrent, 'localServerUrl');
       if (!localServerUrl) {
-        throw new Error('localServerUrl is not provided on the query of the current url');
+        return printError('localServerUrl is not provided on the query of the current url');
       }
-      localServerUrl = decodeURIComponent(localServerUrl);
 
-      var url = localServerUrl
-        + '?url=' + proxyUrl
-        + '&cookie=' + document.cookie;
+      request();
 
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url);
-      xhr.send(null);
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-          location.href = nextUrl;
-        }
-      };
+      function request() {
+        var urlCrossDomain = localServerUrl
+          + '?url=' + proxyUrl
+          + '&cookie=' + document.cookie;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', urlCrossDomain);
+        xhr.send(null);
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            var res = JSON.parse(xhr.response);
+            if (res.result !== 'success') {
+              return printError(res.message);
+            }
+            location.href = originUrl;
+          }
+        };
+        xhr.onerror = function () {
+          printError('cross domain ajax request failed');
+        };
+      }
+
+      function printError(strErr) {
+        document.querySelector('#msg').innerHTML = strErr;
+      }
+
+      function matchPart(str, part) {
+        return decodeURIComponent((str.match(new RegExp(part + '=([^&]*)')) || ['', ''])[1]);
+      }
     })();
   </script>
 </body>

@@ -61,11 +61,11 @@ export function ssoCookieMiddleware(roadhogPath) {
     }
 
     roadhogJson = getRoadhogJson(roadhogPath);
-    if (!roadhogJson) {
+    if (!roadhogJson || !roadhogJson.proxy) {
       return res.json({
         result: 'error',
         data: null,
-        message: 'roadhog json data does not exist at the provided path of the disk'
+        message: 'roadhog json or proxy data does not exist at the provided path of the disk'
       });
     }
 
